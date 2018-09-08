@@ -50,9 +50,8 @@ var octopus = {
 		adminToggleButton.init();
 		catListView.init();
 		catView.init();
-		//if (model.adminMode == true) {
-			adminView.init();
-		//}
+		adminView.init();
+
 
 	},
 
@@ -72,11 +71,26 @@ var octopus = {
 	setCurrentCat: function(cat) {
 		model.currentCat = cat;
 	},
+
 	incrementCounter: function() {
 		model.currentCat.clickCount++;
 		catView.render();
 		adminView.render();
-	}
+	},
+    //hides admin display and saves new cat data when save button is clicked.
+    adminSave: function(){
+				var currentCat = octopus.getCurrentCat();
+        model.currentCat.name= document.getElementById(currentCat.name).value;
+        model.currentCat.imgSrc= document.getElementById(currentCat.imgSrc).value;
+				model.currentCat.clickCount= document.getElementById(currentCat.clickCount).value;
+
+        catView.render();
+        catListView.render();
+        							if (model.adminMode == true) {
+												model.adminMode = false;
+												adminView.render();
+											}
+    }
 };
 
 /* ======== View ======== */
@@ -185,6 +199,12 @@ var adminView = {
 		this.adminImageElem = document.getElementById('1cat-img');
 		this.adminCountElem = document.getElementById('1cat-count');
 
+		this.adminSave = document.getElementById("adminSave");
+
+		this.adminSave.addEventListener('click', function(){ //hides the admin display and saves new cat data.
+            octopus.adminSave();
+        });
+
 		//render the view (update the DOM elements with th right va)
 		this.render();
 	},
@@ -200,20 +220,23 @@ var adminView = {
 
 			var adminNameInput = document.createElement("input"); //input element, text
 			adminNameInput.setAttribute('type',"text");
-			adminNameInput.setAttribute('name',"name");
+			adminNameInput.setAttribute('class',"adminInput");
+			adminNameInput.setAttribute('id', currentCat.name);
 			adminNameInput.setAttribute('value', currentCat.name);
 			this.adminNameElem.appendChild(adminNameInput);
 
 			var adminCountInput = document.createElement("input"); //input element, text
 			adminCountInput.setAttribute('type',"text");
-			adminCountInput.setAttribute('name',"name");
+			adminCountInput.setAttribute('class',"adminCatClicks");
+			adminCountInput.setAttribute('id', currentCat.clickCount);
 			adminCountInput.setAttribute('value', currentCat.clickCount);
 			this.adminCountElem.appendChild(adminCountInput);
 
 			var adminImageInput = document.createElement("input"); //input element, text
 			adminImageInput.setAttribute('type',"text");
-			adminImageInput.setAttribute('name',"name");
-			adminImageInput.setAttribute('value', currentCat.imgSrc);
+			adminImageInput.setAttribute('class',"adminCatUrl");
+			adminImageInput.setAttribute('id', currentCat.imgSrc);
+			adminImageInput.setAttribute('value', currentCat.imgSrc );
 			this.adminImageElem.appendChild(adminImageInput);
 
 			console.log(model.adminMode);
