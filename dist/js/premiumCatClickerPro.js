@@ -2,7 +2,7 @@ window.onload=function(){
 
 /* ======== Model ======== */
 var model = {
-	currentCat: null,
+	//currentCat: null,
 	adminMode: false,
 	cats: [
 					{
@@ -45,9 +45,9 @@ var model = {
 
 var octopus = {
 	init: function() {
-		// set our current cat to the first one in the addEventListener
+		// set our current cat to the first one
 		model.currentCat = model.cats[0];
-		adminToggleButton.init();
+		//adminToggleButton.init();
 		catListView.init();
 		catView.init();
 		adminView.init();
@@ -77,20 +77,29 @@ var octopus = {
 		catView.render();
 		adminView.render();
 	},
-    //hides admin display and saves new cat data when save button is clicked.
-    adminSave: function(){
-				var currentCat = octopus.getCurrentCat();
-        model.currentCat.name= document.getElementById(currentCat.name).value;
-        model.currentCat.imgSrc= document.getElementById(currentCat.imgSrc).value;
-				model.currentCat.clickCount= document.getElementById(currentCat.clickCount).value;
+		//hides admin display and saves new cat data when save button is clicked.
+		adminSave: function(){
+			var currentCat = octopus.getCurrentCat();
+			model.currentCat.name= document.getElementById(currentCat.name).value;
+			model.currentCat.imgSrc= document.getElementById(currentCat.imgSrc).value;
+			model.currentCat.clickCount= document.getElementById(currentCat.clickCount).value;
 
-        catView.render();
-        catListView.render();
-        							if (model.adminMode == true) {
-												model.adminMode = false;
-												adminView.render();
-											}
-    }
+			catView.render();
+			catListView.render();
+			if (model.adminMode == true) {
+				model.adminMode = false;
+				adminView.render();
+			}
+		},
+
+		adminCancel: function(){
+			catView.render();
+			catListView.render();
+			if (model.adminMode == true) {
+				model.adminMode = false;
+				adminView.render();
+			}
+		}
 };
 
 /* ======== View ======== */
@@ -169,11 +178,28 @@ var catListView = {
 
 /* ======== View ======== */
 
-var adminToggleButton = {
-	init: function() {
-		this.toggleButton = document.getElementById('admin-mode');
 
-		this.toggleButton.addEventListener('click', function(){
+
+
+var adminView = {
+	init: function() {
+		// store pointers to our DOM elements for easy access later
+		this.adminNameElem = document.getElementById('1cat-name');
+		this.adminImageElem = document.getElementById('1cat-img');
+		this.adminCountElem = document.getElementById('1cat-count');
+		this.adminCancelElem = document.getElementById('adminCancel');
+		this.adminSaveElem = document.getElementById('adminSave');
+		this.adminToggleElem = document.getElementById('admin-mode');
+
+		this.adminSaveElem.addEventListener('click', function(){
+			octopus.adminSave();
+		});
+
+		this.adminCancelElem.addEventListener('click', function(){
+			octopus.adminCancel();
+		});
+
+		this.adminToggleElem.addEventListener('click', function(){
 			if (model.adminMode == false) {
 				model.adminMode = true;
 				adminView.render();
@@ -183,34 +209,14 @@ var adminToggleButton = {
 					adminView.render();
 			}
 		});
-	},
 
-	render: function() {
-
-
-	}
-};
-
-
-var adminView = {
-	init: function() {
-		// store pointers to our DOM elements for easy access later
-		this.adminNameElem = document.getElementById('1cat-name');
-		this.adminImageElem = document.getElementById('1cat-img');
-		this.adminCountElem = document.getElementById('1cat-count');
-
-		this.adminSave = document.getElementById("adminSave");
-
-		this.adminSave.addEventListener('click', function(){ //hides the admin display and saves new cat data.
-            octopus.adminSave();
-        });
-
-		//render the view (update the DOM elements with th right va)
+		//render the view (update the DOM elements with th right values)
 		this.render();
 	},
 
 	render: function() {
-
+		this.adminCancelElem.textContent = '';
+		this.adminSaveElem.textContent = '';
 		var currentCat = octopus.getCurrentCat();
 		var modelCat = octopus.getModelCat();
 		if (model.adminMode === true) {
@@ -218,12 +224,24 @@ var adminView = {
 			this.adminNameElem.textContent = modelCat[1];
 			this.adminImageElem.textContent = modelCat[2];
 
+			var createSaveButton = document.createElement("BUTTON");
+			var t = document.createTextNode("Save");
+			createSaveButton.appendChild(t);
+			this.adminSaveElem.appendChild(createSaveButton);
+
+			var createCancelButton = document.createElement("BUTTON");
+			var t2 = document.createTextNode("Cancel");
+			createCancelButton.appendChild(t2);
+			this.adminCancelElem.appendChild(createCancelButton);
+
+
 			var adminNameInput = document.createElement("input"); //input element, text
 			adminNameInput.setAttribute('type',"text");
 			adminNameInput.setAttribute('class',"adminInput");
 			adminNameInput.setAttribute('id', currentCat.name);
 			adminNameInput.setAttribute('value', currentCat.name);
 			this.adminNameElem.appendChild(adminNameInput);
+
 
 			var adminCountInput = document.createElement("input"); //input element, text
 			adminCountInput.setAttribute('type',"text");
@@ -245,6 +263,8 @@ var adminView = {
 				this.adminCountElem.textContent = '';
 				this.adminNameElem.textContent = '';
 				this.adminImageElem.textContent = '';
+				this.adminCancelElem.textContent = '';
+				this.adminSaveElem.textContent = '';
 				console.log(model.adminMode);
 				console.log(model.adminMode);
 		}
