@@ -3,7 +3,7 @@ window.onload=function(){
 /* ======== Model ======== */
 var model = {
 	currentCat: null,
-	adminMode: true,
+	adminMode: false,
 	cats: [
 					{
 						clickCount: 0,
@@ -50,9 +50,9 @@ var octopus = {
 		adminToggleButton.init();
 		catListView.init();
 		catView.init();
-		if (model.adminMode == true) {
+		//if (model.adminMode == true) {
 			adminView.init();
-		}
+		//}
 
 	},
 
@@ -138,9 +138,10 @@ var catListView = {
 				return function() {
 					octopus.setCurrentCat(cat);
 					catView.render();
-					if (model.adminMode == true) {
-						adminView.init();
-					}
+							if (model.adminMode == true) {
+								model.adminMode = false;
+								adminView.render();
+							}
 				};
 
 			})(cat));
@@ -159,12 +160,15 @@ var adminToggleButton = {
 		this.toggleButton = document.getElementById('admin-mode');
 
 		this.toggleButton.addEventListener('click', function(){
-							if (model.adminMode == false) {
-								adminView.init();
-							}
+			if (model.adminMode == false) {
+				model.adminMode = true;
+				adminView.render();
+
+			} else {
+					model.adminMode = false;
+					adminView.render();
+			}
 		});
-
-
 	},
 
 	render: function() {
@@ -177,7 +181,6 @@ var adminToggleButton = {
 var adminView = {
 	init: function() {
 		// store pointers to our DOM elements for easy access later
-		this.adminElem = document.getElementById('1cat');
 		this.adminNameElem = document.getElementById('1cat-name');
 		this.adminImageElem = document.getElementById('1cat-img');
 		this.adminCountElem = document.getElementById('1cat-count');
@@ -187,35 +190,45 @@ var adminView = {
 	},
 
 	render: function() {
+
 		var currentCat = octopus.getCurrentCat();
 		var modelCat = octopus.getModelCat();
-		console.log(modelCat);
-		//var adminCat = octopus.getAdminCat();
-		//console.log(adminCat);
-		this.adminCountElem.textContent = modelCat[0];
-		this.adminNameElem.textContent = modelCat[1];
-		this.adminImageElem.textContent = modelCat[2];
+		if (model.adminMode === true) {
+			this.adminCountElem.textContent = modelCat[0];
+			this.adminNameElem.textContent = modelCat[1];
+			this.adminImageElem.textContent = modelCat[2];
 
-		var adminNameInput = document.createElement("input"); //input element, text
-		adminNameInput.setAttribute('type',"text");
-		adminNameInput.setAttribute('name',"name");
-		adminNameInput.setAttribute('value', currentCat.name);
-		this.adminNameElem.appendChild(adminNameInput);
+			var adminNameInput = document.createElement("input"); //input element, text
+			adminNameInput.setAttribute('type',"text");
+			adminNameInput.setAttribute('name',"name");
+			adminNameInput.setAttribute('value', currentCat.name);
+			this.adminNameElem.appendChild(adminNameInput);
 
-		var adminCountInput = document.createElement("input"); //input element, text
-		adminCountInput.setAttribute('type',"text");
-		adminCountInput.setAttribute('name',"name");
-		adminCountInput.setAttribute('value', currentCat.clickCount);
-		this.adminCountElem.appendChild(adminCountInput);
+			var adminCountInput = document.createElement("input"); //input element, text
+			adminCountInput.setAttribute('type',"text");
+			adminCountInput.setAttribute('name',"name");
+			adminCountInput.setAttribute('value', currentCat.clickCount);
+			this.adminCountElem.appendChild(adminCountInput);
 
-		var adminImageInput = document.createElement("input"); //input element, text
-		adminImageInput.setAttribute('type',"text");
-		adminImageInput.setAttribute('name',"name");
-		adminImageInput.setAttribute('value', currentCat.imgSrc);
-		this.adminImageElem.appendChild(adminImageInput);
+			var adminImageInput = document.createElement("input"); //input element, text
+			adminImageInput.setAttribute('type',"text");
+			adminImageInput.setAttribute('name',"name");
+			adminImageInput.setAttribute('value', currentCat.imgSrc);
+			this.adminImageElem.appendChild(adminImageInput);
 
+			console.log(model.adminMode);
 
-	}
+		} else {
+				this.adminCountElem.textContent = '';
+				this.adminNameElem.textContent = '';
+				this.adminImageElem.textContent = '';
+				console.log(model.adminMode);
+				console.log(model.adminMode);
+		}
+	},
+	reset: function() {
+
+	},
 };
 
 // make it go
