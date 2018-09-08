@@ -24,12 +24,12 @@ gulp.task('build', function() {
     )
     .pipe(autoprefixer())
     .pipe(csscomb())
-    .pipe(gulp.dest('./dist'))
+    .pipe(gulp.dest('./dist/css'))
     .pipe(cleancss())
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest('./dist/css'));
 });
 
 gulp.task('docs', function() {
