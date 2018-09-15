@@ -54,14 +54,11 @@ var octopus = {
 		catListView.init();
 		catView.init();
 		adminView.init();
-
-
 	},
 
+
 	getCurrentCat: () => model.currentCat,
-
 	getCats: () => model.cats,
-
 	getModelCat: () => Object.keys(model.cats[2]),
 
 	// set the currently-selected cat to the object passed in
@@ -72,6 +69,8 @@ var octopus = {
 		catView.render();
 		adminView.render();
 	},
+
+
 		//hides admin display and saves new cat data when save button is clicked.
 		adminSave: () => {
 			var currentCat = octopus.getCurrentCat();
@@ -81,19 +80,13 @@ var octopus = {
 
 			catView.render();
 			catListView.render();
-			if (model.admin.mode == true) {
-				model.admin.mode = false;
-				adminView.render();
-			}
+			adminView.toggleAdminMode();
 		},
 
 		adminCancel: () => {
 			catView.render();
 			catListView.render();
-			if (model.admin.mode == true) {
-				model.admin.mode = false;
-				adminView.render();
-			}
+			adminView.toggleAdminMode();
 		}
 };
 
@@ -209,7 +202,16 @@ var adminView = {
 		this.render();
 	},
 
+	toggleAdminMode: () => {
+		if (model.admin.mode == true) {
+			model.admin.mode = false;
+			adminView.render();
+		}
+	},
+
+
 	render: function() {
+
 		this.adminCancelElem.textContent = '';
 		this.adminSaveElem.textContent = '';
 		this.adminToggleElem.textContent = model.admin.buttonName;
